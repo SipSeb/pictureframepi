@@ -1,0 +1,1 @@
+/home/pi/Pictures       IN_CREATE,IN_MOVED_TO,IN_MOVED_FROM,IN_DELETE   /usr/local/bin/manage_slideshow_on_file_change.sh $# $%

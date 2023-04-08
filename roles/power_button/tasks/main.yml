@@ -1,0 +1,21 @@
+---
+- name: Install Button Watch Script
+  copy:
+    src: reboot_on_button_pressed.py
+    dest: /usr/local/sbin/reboot_on_button_pressed.py
+    mode: 0500
+
+- name: install systemd file
+  copy:
+    src: power_button.service
+    dest: /etc/systemd/system
+    mode: 0555
+
+- name: reload systemd
+  shell: systemctl daemon-reload
+
+- name: enable power_button service on startup
+  service:
+    name: power_button
+    enabled: yes
+    state: started

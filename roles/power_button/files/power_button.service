@@ -1,0 +1,13 @@
+[Unit]
+After=systemd-user-sessions.service plymouth-quit-wait.service
+After=rc-local.service
+IgnoreOnIsolate=yes
+
+[Service]
+ExecStart=/usr/local/sbin/reboot_on_button_pressed.py
+ExecStop=killall reboot_on_button_pressed.py
+Type=simple
+RemainAfterExit=no
+
+[Install]
+WantedBy=getty.target

@@ -1,0 +1,11 @@
+---
+- hosts: pictureframepi
+  user: pi
+  become: true
+  roles:
+    - {role: configure_pi, tags: system}
+    - {role: make_usr_local_accessible, tags: usrlocal}
+    - {role: samba_server, tags: samba_server}
+    - {role: mailfetcher, tags: mailfetcher}
+    - {role: power_button, tags: power_button}
+    - {role: slideshow_fbi, tags: slideshow}

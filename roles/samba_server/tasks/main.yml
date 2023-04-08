@@ -1,0 +1,32 @@
+---
+- name: install samba
+  apt:
+    pkg:
+      - samba
+      - samba-common-bin
+    state: latest
+
+- name: Copy config file
+  template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    mode: 0444
+
+- name: Configure Samba users.
+  shell: >
+    (pdbedit --user=pi 2>&1 > /dev/null)
+    || (echo '{{ smb_pi_password }}'; echo '{{ smb_pi_password }}')
+    | smbpasswd -s -a pi 
+  register: smbpasswd
+  changed_when: "'Added user' in smbpasswd.stdout"
+
+- name: Enable Samba Autostart
+  service:
+    name: smbd
+    enabled: yes
+
+- name: Restart Samba
+  service:
+    name: smbd
+    state: restarted
+

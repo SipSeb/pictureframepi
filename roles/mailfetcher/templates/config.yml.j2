@@ -1,0 +1,11 @@
+---
+mailbox:
+  host: "{{ mail_server }}"
+  port: "{{ mail_server_port | default(993) | int }}"
+  username: "{{ mail_username }}"
+  password: "{{ mail_password }}"
+  use_ssl: "{{ mail_ssl | bool }}"
+
+mailbox_folder: "{{ mail_folder }}"
+
+screen_resolution: "{{ screen_resolution }}"

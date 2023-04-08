@@ -1,0 +1,72 @@
+---
+- name: Install ruby stuff
+  apt:
+    pkg:
+      - ruby
+      - ruby-mini-magick
+      - ruby-mail
+
+- name: ensure picture directories exist
+  file:
+    path: "/home/pi/{{ item }}"
+    state: directory
+  become: false
+  loop:
+    - Pictures
+    - Slideshow
+
+- name: Place config file
+  template:
+    src: config.yml.j2
+    dest: /home/pi/.config/mailfetcher/config.yml
+    owner: pi
+    mode: 0444
+  become: false
+
+- name: copy mailfetcher script
+  copy:
+    src: fetch_mail.rb
+    dest: /home/pi/bin/fetch_mail.rb
+    owner: pi
+    mode: 0555
+  become: false
+
+- name: copy test script
+  copy:
+    src: mailtest.rb
+    dest: /home/pi/bin/mailtest.rb
+    owner: pi
+    mode: 0555
+  become: false
+
+- name: create config directory
+  file:
+    path: /home/pi/.config/mailfetcher
+    state: directory
+    mode: 0755
+    owner: pi
+  become: false
+
+- name: Run test script
+  shell: /home/pi/bin/mailtest.rb
+  become: false
+  register: mailtest_cmd
+  
+- name: print output
+  debug:
+    var: mailtest_cmd
+
+- name: setup cron job for regular fetching
+  cron:
+    name: "Check for new pictures in mailbox every 15 minutes"
+    minute: "*/15"
+    user: pi
+    job: "/home/pi/bin/fetch_mail.rb"
+
+- name: setup cron job for fetching after reboot
+  cron:
+    name: "Check for new pictures in mailbox every 15 minutes"
+    special_time: reboot
+    user: pi
+    job: "sleep 30 && /home/pi/bin/fetch_mail.rb"
+

@@ -1,0 +1,103 @@
+---
+- name: install required packages
+  apt:
+    pkg:
+      - fbi
+      - imagemagick
+      - incron
+    state: latest
+
+- name: create bin dir in Home
+  file:
+    name: /home/pi/bin
+    state: directory
+    mode: 0755
+  become: false
+
+- name: create etc dir in Home
+  file:
+    name: /usr/local/etc
+    state: directory
+    mode: 0755
+
+- name: create Slideshow Dir in Home
+  file:
+    name: /home/pi/Slideshow
+    state: directory
+    mode: 0755
+  become: false
+
+- name: place config file
+  template:
+    src: slideshow.env.j2
+    dest: /usr/local/etc/slideshow.env
+    mode: 0444
+
+- name: install shared functions
+  copy:
+    src: "slideshow_functions.sh"
+    dest: "/usr/local/lib/slideshow_functions.sh"
+    mode: 0444
+
+- name: install helper scripts from files
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: 0555
+  with_items:
+    - generate_slideshow_copy.sh
+    - manage_slideshow_on_file_change.sh
+    - generate_single_slideshow_copy.sh
+    - show_slideshow.sh
+
+- name: enable incron to watch for files
+  service:
+    name: incron
+    enabled: true
+    state: started
+
+- name: add user pi to group incron
+  user:
+    name: pi
+    append: yes
+    groups:
+      - incron
+
+- name: add user pi to /etc/incron.allow
+  lineinfile:
+    line: pi
+    path: /etc/incron.allow
+
+- name: Place dummy incrontab file in user home
+  copy:
+    src: incrontab_content
+    dest: /home/pi/incrontab_example
+  become: false
+  register: crontab_content
+
+- name: Generate incrontab manually
+  pause:
+    prompt: "Please paste stuff from /home/pi/incrontab_example into 'incrontab -e'"
+  when: crontab_content.changed
+
+- name: install welcome pic
+  copy:
+    src: frame_welcome.jpg
+    dest: /usr/local/share/frame_welcome.jpg
+    mode: 0444
+
+- name: install systemd file
+  copy:
+    src: slideshow.service
+    dest: /etc/systemd/system
+    mode: 0555
+
+- name: reload systemd
+  shell: systemctl daemon-reload
+
+- name: enable slideshow service on startup
+  service:
+    name: slideshow
+    enabled: yes
+
+- 

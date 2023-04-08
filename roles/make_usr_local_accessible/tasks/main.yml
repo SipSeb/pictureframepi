@@ -1,0 +1,14 @@
+---
+- name: "Add pi to group staff"
+  user:
+    name: pi
+    groups:
+      - staff
+    append: yes
+
+- name: Change group of /usr/local/ and subdirectories
+  file:
+    dest: /usr/local
+    group: staff
+    recurse: yes
+

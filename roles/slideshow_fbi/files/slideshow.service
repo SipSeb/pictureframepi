@@ -1,0 +1,15 @@
+[Unit]
+After=systemd-user-sessions.service plymouth-quit-wait.service
+After=rc-local.service
+IgnoreOnIsolate=yes
+
+ConditionPathExists=/dev/tty0
+
+[Service]
+ExecStart=/usr/local/bin/show_slideshow.sh
+ExecStop=killall fbi
+Type=oneshot
+RemainAfterExit=true
+
+[Install]
+WantedBy=getty.target

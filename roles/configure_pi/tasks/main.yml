@@ -1,0 +1,39 @@
+---
+- name: install a list of packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 7200
+    pkg:
+      - iftop
+      - psmisc
+      - pwgen
+      - vim
+      - aptitude
+      - fbi
+      - screen
+    state: latest
+
+- name: remove unwanted packages
+  apt:
+    pkg:
+      - cups
+      - hplip
+      - printer-driver-hpcups
+      - pi-printer-support
+    state: absent
+
+- name: enable printing of network parameters on login
+  become: false
+  lineinfile:
+   line: ip -o a
+   path: /home/pi/.bashrc
+
+- name: set default editor
+  shell: update-alternatives --set editor /usr/bin/vim.basic
+
+- name: ensure /home/pi/bin exists
+  file:
+    path: /home/pi/bin
+    state: directory
+    mode: 0755
+  become: false

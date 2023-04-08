@@ -1,0 +1,31 @@
+---
+
+screen_resolution: "1920x1080"
+
+# samba settings
+smb_pi_password: "helloworld" # Password for the samba share
+smb_workgroup_name: "WORKGROUP" # Default "WORKGROUP"
+smb_share_name: "pictureframe" # Default "pictureframe"
+smb_share_comment: "Pictures on the frame" # Default "Pictures on the frame"
+
+# mail settings
+mail_folder: "WithAttachment" # Which folder contains the relevant mails?
+mail_server: "example.com" # Server to connect to
+mail_server_port: 993 # Server port
+mail_ssl: true # Secure connection
+mail_username: "username" # Username
+mail_password: "password" # Password
+
+# slideshow settings
+slideshow_image_duration: 40 # How long one picture should stay on the frame
+slideshow_max_items: 1200 # How many pictures to include in the slideshow
+slideshow_welcome_message: "Slideshow will start soon." # Welcome message printed while the slideshow is generated
+slideshow_mail_address: "my.address@example.com" # Printed during startup
+slideshow_new_images_message: "New images found." # Displayed when a change in the slideshow directory was detected and the slideshow is restarted
+slideshow_restarting_message: "Starting new slideshow" # Displayed when a change in the slideshow directory was detected and the slideshow is restarted
+slideshow_new_days: 1 # How many days will new pictures labeled as new and displayed as first pictures of each slideshow?
+slideshow_new_message: "NEW" # will be shown on all new pictures in the top left corner
+
+imagemagick_quality: 92 # Quality setting for the convert step
+imagemagick_extra_params: "-modulate 100,130,100" # If needed, specify extra params here
+                        # My screen showed a bit flat-colored images, so I increased the saturation by 30%
