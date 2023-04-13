@@ -55,9 +55,12 @@ imap.search(imap_search).each do |message_id|
   messages_found += 1
   there_were_errors = false
   envelope = imap.fetch(message_id, "ENVELOPE")[0].attr["ENVELOPE"]
-  puts "From address: #{envelope.from[0].mailbox}@#{envelope.from[0].host}"
   maildate = DateTime.parse(envelope.date)
-  puts "Found Mail from '#{envelope.from[0].name} <#{envelope.from[0].mailbox}@#{envelope.from[0].host}>' - Subject '#{envelope.subject}' - date '#{envelope.date}'"
+  subject = "untitled"
+  subject = envelope.subject if envelope.subject.class == String
+  decoded_subject = Mail::Encodings.unquote_and_convert_to(subject, 'utf-8' )
+  clean_subject = decoded_subject.strip.downcase.gsub(/[^a-z0-9\-äöüß]+/i, '_')
+  puts "Found Mail from '#{envelope.from[0].name} <#{envelope.from[0].mailbox}@#{envelope.from[0].host}>' - Subject '#{subject}' - date '#{envelope.date}'"
   body = imap.fetch(message_id, "BODY[]")[0].attr["BODY[]"]
   mail = Mail.new(body)
   attachments_found = 0
@@ -66,7 +69,7 @@ imap.search(imap_search).each do |message_id|
     next unless a.mime_type =~ /^image\//
     puts "Found Attachment with type #{a.mime_type}, name #{a.filename}"
     begin
-      destinationFileName = "/#{maildate.strftime('%Y-%m-%d_%H:%M')}_#{attachments_found}_#{a.filename}"
+      destinationFileName = "/#{maildate.strftime('%Y-%m-%d_%H%M')}_#{clean_subject}_#{attachments_found}_#{a.filename}"
       File.write("/tmp/" + destinationFileName, a.body.decoded)
       puts "Wrote image to /tmp"
       # Now resize
