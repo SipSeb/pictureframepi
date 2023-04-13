@@ -32,7 +32,8 @@ There is no Google authentication procedure built in. So if you want to use this
 ## Installation
 1. Copy `examples/inventory` to the main project folder and enter the target machine.
 2. Copy `examples/pictureframepi.yml` to the `group_vars` folder and configure your frame. Parameters are explained in the example file.
-3. Then run ansible: `ansible -i inventory setup_frame.yml`
+3. There is a sample welcome picture included, which gets displayed while the slideshow is being generated. You can customize it by replacing the `welcome.jpg` file in the base directory.
+4. Then run ansible: `ansible -i inventory setup_frame.yml`
 
 ## Important files on the raspberry pi
 * A lot of stuff is configurable. All data (pictures), however, is placed inside the pi user's home dir.
