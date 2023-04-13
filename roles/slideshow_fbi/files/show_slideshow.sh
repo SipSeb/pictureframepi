@@ -73,9 +73,11 @@ for newfile in `find $dir -type f -mtime -${newDays}`; do
 done
 
 picCount=0
-for i in `ls -1 $dir | shuf` ; do
+# Change to the Slideshow dir to remove path prefixes from the subtitles
+cd $dir
+for i in `ls -1 | shuf` ; do
 	picCount=$(expr $picCount + 1)
-	thisShow="$thisShow ${dir}/$i"
+	thisShow="$thisShow $i"
 	if [ $picCount -gt $maxItems ] ; then break ; fi
 done
 
