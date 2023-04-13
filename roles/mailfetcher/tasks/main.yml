@@ -65,7 +65,7 @@
 
 - name: setup cron job for fetching after reboot
   cron:
-    name: "Check for new pictures in mailbox every 15 minutes"
+    name: "Check for new pictures in mailbox on reboot"
     special_time: reboot
     user: pi
     job: "sleep 30 && /home/pi/bin/fetch_mail.rb"
