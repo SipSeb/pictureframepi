@@ -82,7 +82,7 @@
 
 - name: install welcome pic
   copy:
-    src: frame_welcome.jpg
+    src: "{{ playbook_dir }}/welcome.jpg"
     dest: /usr/local/share/frame_welcome.jpg
     mode: 0444
 
