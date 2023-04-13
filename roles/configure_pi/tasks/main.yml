@@ -11,6 +11,8 @@
       - aptitude
       - fbi
       - screen
+      - imagemagick
+      - rpd-plym-splash
     state: latest
 
 - name: remove unwanted packages
@@ -30,6 +32,19 @@
 
 - name: set default editor
   shell: update-alternatives --set editor /usr/bin/vim.basic
+
+- name: enable boot splash screen
+  shell: "raspi-config nonint do_boot_splash 0"
+  ignore_errors: true
+
+- name: copy welcome screen to /tmp
+  copy:
+    src: "{{ playbook_dir }}/welcome.jpg"
+    dest: /tmp/splash.jpg
+    mode: 0444
+
+- name: setup this file as splash screen
+  shell: convert -quality 85 -resize "1024x768>" /tmp/splash.jpg /usr/share/plymouth/themes/pix/splash.png
 
 - name: ensure /home/pi/bin exists
   file:
